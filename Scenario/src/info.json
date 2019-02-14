@@ -1,0 +1,10 @@
+{
+  "name": "Scenario",
+  "version": "0.0.1",
+  "title": "Scenario",
+  "author": "DeznekCZ",
+  "contact": "www.facebook.com/DeznekCZ",
+  "homepage": "",
+  "description": "Scenario is and RPG/RTS extension for Factorio. In future will be implemented as standalone game.",
+  "factorio_version": "0.16"
+}
