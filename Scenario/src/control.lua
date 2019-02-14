@@ -27,7 +27,8 @@ local function get_or_create_player_force(player)
   if not scenario[player.name..":"..player.tag] then
     scenario[player.name..":"..player.tag] = { 
       builder = "builder:"..scenario.forces._index,
-      player = "player:"..scenario.forces._index
+      player = "player:"..scenario.forces._index,
+      entity = ":"..player.tag,
     }
     scenario.forces._index = scenario.forces._index + 1
   end
@@ -39,12 +40,26 @@ local function get_or_create_builder_force(player)
   if not scenario[player.name..":"..player.tag] then
     scenario[player.name..":"..player.tag] = { 
       builder = "builder:"..scenario.forces._index,
-      player = "player:"..scenario.forces._index
+      player = "player:"..scenario.forces._index,
+      entity = ":"..player.tag,
     }
     scenario.forces._index = scenario.forces._index + 1
   end
   
   return game.forces[scenario[player.name..":"..player.tag].builder] or game.create_force(scenario[player.name..":"..player.tag].builder)
+end
+
+local function get_or_create_character_tag(player)
+  if not scenario[player.name..":"..player.tag] then
+    scenario[player.name..":"..player.tag] = { 
+      builder = "builder:"..scenario.forces._index,
+      player = "player:"..scenario.forces._index,
+      entity = ":"..player.tag,
+    }
+    scenario.forces._index = scenario.forces._index + 1
+  end
+  
+  return scenario[player.name..":"..player.tag].entity
 end
 
 local function string_starts(str_value, str_start)
@@ -54,13 +69,7 @@ end
 
 local function on_init()
   if game and not game.forces["gm"] then
-    local gm_force = game.create_force("gm")
-    
-    for tree_name, tree_data in pairs(game.entity_prototypes) do
-      if string.match(tree_data.type, "tree") then 
-        gm_force.recipes[tree_name.."-recipe"].enabled = true
-      end
-    end
+    game.create_force("gm")
   end
 end
 
@@ -206,7 +215,9 @@ script.on_event(defines.events.on_player_joined_game, function(event)
     scenario.characters[player.name][player.tag] = Character.new(player.tag)
     
     -- Detaching default character
-    scenario.detached["player:"..player.name..":"..player.tag] = player.character
+    if player.character ~= nil then 
+      scenario.detached["player:"..player.name..":"..player.tag] = player.character
+    end
     --player.set_controller{type = defines.controllers.ghost}
     --player.disassociate_character(scenario.detached["player:"..player.name..":"..player.tag])
     
@@ -223,3 +234,9 @@ script.on_event(defines.events.on_player_joined_game, function(event)
   
   game.print("player "..player.name.." is "..force_name)
 end)
+
+--script.on_event(defines.events.on_player_left_game, function(event)
+--  local player = game.players[event.player_index]
+--  
+--  player.force = get_or_create_player_force(player)
+--end)

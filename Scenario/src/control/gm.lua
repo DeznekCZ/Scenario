@@ -9,7 +9,12 @@ end
 function GM.RestoreBar(player)
   if not global.scenario.gm[player.name] then
     -- Init inventory
-    -- Not specific to load
+    for tree_name, tree_data in pairs(game.entity_prototypes) do
+      if string.match(tree_data.type, "tree") and game.forces.gm.recipes[tree_name.."-recipe"] then 
+        game.forces.gm.recipes[tree_name.."-recipe"].enabled = true
+      end
+    end
+    -- Not specific to loada
   else
     -- Load inventory
     
@@ -19,11 +24,5 @@ end
 
 function GM.SaveBar(player)
   player.cheat_mode = false
-  if not global.scenario.gm[player.name] then
-    
-  else
-    -- Load inventory
-    
-  
-  end
+  -- Save inventory
 end
